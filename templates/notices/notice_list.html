@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block content %}
+<h2>All Notices</h2>
+
+{% for notice in notices %}
+<div>
+    <h3>
+        <a href="{% url 'notices:detail' notice.pk %}">
+                {{ notice.title }}
+            </a>
+    </h3>
+    <p>By {{ notice.author }} | {{ notice.created_at }}</p>
+    <p>{{ notice.body|truncatechars:100 }}</p>
+</div>
+<hr> {% empty %}
+<p>No notices yet.</p>
+{% endfor %} {% endblock %}
