@@ -5,6 +5,19 @@
     <title>Notice Board</title>
 </head>
 
+<nav>
+    <a href="{% url 'notices:list' %}">Board</a> {% if user.is_authenticated %}
+    <span>Hi, {{ user.username }}</span>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    {% else %}
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'accounts:signup' %}">Sign up</a> {% endif %}
+</nav>
+<hr>
+
 <body>
     <h1>Notice Board</h1>
     <hr> {% block content %}{% endblock %}
