@@ -1,0 +1,11 @@
+{% extends "base.html" %} {% block content %}
+<h2>New Notice</h2>
+
+<p>By {{ user.username }}</p>
+
+<form method="post">
+    {% csrf_token %} {{ form.non_field_errors }} {{ form.as_p }}
+    <button type="submit">Create Notice</button>
+</form>
+
+<a href="{% url 'notices:list' %}">Back to list</a> {% endblock %}

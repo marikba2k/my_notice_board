@@ -12,9 +12,10 @@
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
-    {% else %}
+    <a href="{% url 'notices:create' %}">New Notice</a> {% else %}
     <a href="{% url 'login' %}">Login</a>
     <a href="{% url 'accounts:signup' %}">Sign up</a> {% endif %}
+
 </nav>
 <hr>
 
