@@ -5,4 +5,10 @@
 
 <p>{{ notice.body }}</p>
 
-<a href="{% url 'notices:list' %}">Back to list</a> {% endblock %}
+{% if user == notice.author %}
+<p>
+    <a href="{% url 'notices:edit' notice.pk %}">Edit Notice</a> |
+    <a href="{% url 'notices:delete' notice.pk %}">Delete Notice</a>
+    <p> {% endif %}
+
+        <a href="{% url 'notices:list' %}">Back to list</a> {% endblock %}
