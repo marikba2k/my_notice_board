@@ -5,6 +5,7 @@ from .forms import NoticeForm
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 
 
@@ -28,6 +29,7 @@ class NoticeCreateView(LoginRequiredMixin,CreateView):
 
     def form_valid(self, form):
             form.instance.author = self.request.user
+            messages.success(self.request, "Notice created successfully")
             return super().form_valid(form)
 
 class NoticeUpdateView(LoginRequiredMixin,UpdateView):
@@ -35,6 +37,10 @@ class NoticeUpdateView(LoginRequiredMixin,UpdateView):
     form_class = NoticeForm
     template_name = "notices/notice_form.html"
     success_url = reverse_lazy("notices:list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Notice updated successfully")
+        return super().form_valid(form)
 
     def get_queryset(self):
         return Notice.objects.filter(author=self.request.user)
@@ -44,6 +50,10 @@ class NoticeDeleteView(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy("notices:list")
     template_name = "notices/notice_confirm_delete.html"
     context_object_name = "notice"
+
+    def form_valid(self, form):
+        messages.success(self.request, "Notice deleted successfully")
+        return super().form_valid(form)
 
     def get_queryset(self):
         return Notice.objects.filter(author=self.request.user)
