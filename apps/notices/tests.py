@@ -6,6 +6,43 @@ from django.urls import reverse
 
 from .models import Notice
 
+class NoticeListViewTests(TestCase):
+    def test_notice_list_is_paginated(self):
+        user = get_user_model().objects.create_user(
+            username="pagination_user",
+            password="testpass123"
+        )
+
+        for i in range(15):
+            Notice.objects.create(
+                title=f"Notice {i}",
+                body="Test body",
+                author=user
+            )
+
+        response = self.client.get(reverse("notices:list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["notices"]), 10)
+            
+        def test_notice_list_second_page_contains_remaining_notices(self):
+            user = get_user_model().objects.create_user(
+                username="pagination_user_2",
+                password="testpass123"
+            )
+
+            for i in range(15):
+                Notice.objects.create(
+                    title=f"Notice {i}",
+                    body="Test body",
+                    author=user
+                )
+
+            response = self.client.get(reverse("notices:list") + "?page=2")
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(response.context["notices"]), 5)
 
 class NoticeCreateViewTests(TestCase):
     def setUp(self):
