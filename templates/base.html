@@ -21,6 +21,13 @@
 
 <body>
     <h1>Notice Board</h1>
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <hr> {% block content %}{% endblock %}
 </body>
 
