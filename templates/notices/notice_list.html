@@ -1,8 +1,13 @@
 {% extends "base.html" %} {% block content %}
 <h2>All Notices</h2>
+<form method="get">
+    <input type="text" name="q" placeholder="Search notices..." value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+</form>
 
 {% for notice in notices %}
 <div>
+
     <h3>
         <a href="{% url 'notices:detail' notice.pk %}">
                 {{ notice.title }}
@@ -16,13 +21,13 @@
 {% endfor %} {% if is_paginated %}
 <div>
     {% if page_obj.has_previous %}
-    <a href="?page=1">First</a>
-    <a href="?page={{ page_obj.previous_page_number }}">Previous</a> {% endif %}
+    <a href="?q={{ request.GET.q }}&page=1">First</a>
+    <a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">Previous</a> {% endif %}
 
     <span>
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
         </span> {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">Next</a>
-    <a href="?page={{ page_obj.paginator.num_pages }}">Last</a> {% endif %}
+    <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">Next</a>
+    <a href="?q={{ request.GET.q }}&page={{ page_obj.paginator.num_pages }}">Last</a> {% endif %}
 </div>
 {% endif %} {% endblock %}

@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.db.models import Q
 
 
 
@@ -14,6 +15,15 @@ class NoticeListView(ListView):
     template_name = "notices/notice_list.html"
     context_object_name = "notices"
     paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get("q")
+
+        if query:
+            queryset = queryset.filter( Q(title__icontains=query) | Q(body__icontains=query))
+
+        return queryset
 
 
 class NoticeDetailView(DetailView):
