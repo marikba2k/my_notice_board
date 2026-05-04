@@ -64,8 +64,80 @@ class NoticeListViewTests(NoticeTestMixin, TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["notices"]), 5)
 
-    
+    def test_search_filters_notices_by_title(self):
+        user = self.create_user("search_user")
 
+        django_notice = self.create_notice(
+            author=user,
+            title="Django tutorial",
+            body="Learn Django step by step"
+        )
+
+        react_notice = self.create_notice(
+            author=user,
+            title="React guide",
+            body="Learn React step by step"
+        )
+
+        response = self.client.get(reverse("notices:list"), {"q": "django"})
+
+        notices = response.context["notices"]
+
+        self.assertIn(django_notice, notices)
+        self.assertNotIn(react_notice, notices)
+
+    def test_search_filters_notices_by_body(self):
+        user = self.create_user("search_user")
+
+        django_notice = self.create_notice(
+            author=user,
+            title="Random title",
+            body="This is about Django framework"
+        )
+
+        react_notice = self.create_notice(
+            author=user,
+            title="Another title",
+            body="This is about React"
+        )
+
+        response = self.client.get(reverse("notices:list"), {"q": "django"})
+
+        notices = response.context["notices"]
+
+        self.assertIn(django_notice, notices)
+        self.assertNotIn(react_notice, notices)
+
+    def test_search_results_are_paginated(self):
+        user = self.create_user("search_pagination_user")
+
+        # create 15 notices that match search
+        for i in range(15):
+            self.create_notice(
+                author=user,
+                title=f"Django Notice {i}",
+                body="Test body"
+            )
+
+        # create some unrelated notices
+        for i in range(5):
+            self.create_notice(
+                author=user,
+                title=f"React Notice {i}",
+                body="Test body"
+            )
+
+        response = self.client.get(reverse("notices:list"), {"q": "django"})
+
+        notices = response.context["notices"]
+
+        # only matching notices should appear
+        for notice in notices:
+            self.assertIn("Django", notice.title)
+
+        # pagination still applies
+        self.assertEqual(len(notices), 10)
+        self.assertTrue(response.context["is_paginated"])
 
 class NoticeCreateViewTests(NoticeTestMixin, TestCase):
     def setUp(self):
